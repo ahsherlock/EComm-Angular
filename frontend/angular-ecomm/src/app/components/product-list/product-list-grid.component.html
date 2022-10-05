@@ -1,16 +1,28 @@
 <div class="main-content">
     <div class ="section-content section-content-p30">
+        <h4>Category: {{currentCategoryName}}</h4>
+        <hr>
         <div class="container-fluid">
-
             <div class="row">
                 <!-- LOOP OVER PRODUCTS -->
                 <div *ngFor="let tempProduct of products" class="col-md-3">
                     <div class="product-box">
+                        <!--  Add Link to product image -->
+                        <a routerLink="/products/{{tempProduct.id}}">
                         <img src="{{tempProduct.imageUrl}}" class="img-responsive"/>
+                        </a>
+                        <!-- Add link to product name -->
+                        <a routerLink="/products/{{tempProduct.id}}">
                         <h1>{{tempProduct.name}}</h1>
+                        </a>
+                        
                         <div class="price">{{tempProduct.unitPrice | currency:'USD'}}</div>
                         <a href="#" class="primary-btn">Add To Cart</a>
                     </div>
+                </div>
+                <!--If product list is null/empty then display alert message-->
+                <div *ngIf="products?.length == 0" class="alert alert-warning col-md-12" role="alert">
+                    No products Found.
                 </div>
             </div>
 
