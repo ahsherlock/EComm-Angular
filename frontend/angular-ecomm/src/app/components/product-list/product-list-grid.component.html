@@ -17,7 +17,7 @@
                         </a>
                         
                         <div class="price">{{tempProduct.unitPrice | currency:'USD'}}</div>
-                        <a href="#" class="primary-btn">Add To Cart</a>
+                        <button class="btn btn-primary btn-sm"(click)="addToCart(tempProduct)">Add to cart</button>
                     </div>
                 </div>
                 <!--If product list is null/empty then display alert message-->
@@ -25,10 +25,39 @@
                     No products Found.
                 </div>
             </div>
+            <!--begin pagination footer-->
+            <div class="footer-pagination">
+                <div class="row">
+                    <div class = "col-md-6"></div>
+                    <div class = "col-md-6">
+                        <div class ="row">
+                            <div class="col-md-9" style="padding-left: 30%;">
+                                <ngb-pagination [(page)]="thePageNumber"
+                                                [pageSize]="thePageSize"
+                                                [maxSize]="5"
+                                                [boundaryLinks]="true"
+                                                [collectionSize]="totalElements"
+                                                (pageChange)="listProducts()">
 
+                                </ngb-pagination>
+                            </div>
+                            <div class="col-md-3 mt-2" style="text-align: right;">
+                                <span class="mr-2">Page Size</span>
+                                <select #myPageSelect (change)="updatePageSize(myPageSelect.value)">
+                                    <option selected="true">5</option>
+                                    <option>10</option>
+                                    <option>15</option>
+                                    <option>20</option>
+                                    <option>50</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end pagination footer-->
         </div>
 
     </div>
-
 
 </div>
