@@ -942,7 +942,10 @@ footer ul li{
         margin-right:15px
     }
         .main-content.page-m{
-        padding:10% 0!important
+        /*
+        when assigned like this %vals correlate to: top right bottom left
+        */
+        padding:10% 30% 10% 5%
     }
     .header-mobile .navbar-mobile{
         display:none;
