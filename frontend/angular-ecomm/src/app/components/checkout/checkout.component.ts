@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Country } from 'src/app/common/country';
 import { State } from 'src/app/common/state';
 import { AlecEcommFormServiceService } from 'src/app/services/alec-ecomm-form-service.service';
+import { CartService } from 'src/app/services/cart.service';
 import { AlecEcommValidators } from 'src/app/validators/alec-ecomm-validators';
 
 @Component({
@@ -24,9 +25,12 @@ export class CheckoutComponent implements OnInit {
   billingAddressStates: State[] =[];
 
 
-  constructor(private formBuilder:FormBuilder, private alecEcommFormService: AlecEcommFormServiceService) { }
+  constructor(private formBuilder:FormBuilder, private cartService: CartService,private alecEcommFormService: AlecEcommFormServiceService) { }
 
   ngOnInit(): void {
+
+    this.reviewCartDetails();
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: new FormControl('',[Validators.required, Validators.minLength(2), AlecEcommValidators.notOnlyWhiteSpace]),
@@ -104,7 +108,16 @@ export class CheckoutComponent implements OnInit {
   get creditCardNumber(){return this.checkoutFormGroup.get('creditCard.cardNumber');}
   get creditCardSecurityCode(){return this.checkoutFormGroup.get('creditCard.securityCode');}
 
-
+  reviewCartDetails(){
+    //subscribe to cartservice total quantity
+    this.cartService.totalQuantity.subscribe(
+      totalQuantity => this.totalQuantity = totalQuantity
+    );
+    //subscribe to cartservice total price
+    this.cartService.totalPrice.subscribe(
+      totalPrice => this.totalPrice = totalPrice
+    );
+  }
 
   handleMonthsAndYears(){
     const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
