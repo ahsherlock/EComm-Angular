@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Country } from 'src/app/common/country';
+import { Order } from 'src/app/common/order';
+import { OrderItem } from 'src/app/common/order-item';
+import { Purchase } from 'src/app/common/purchase';
 import { State } from 'src/app/common/state';
 import { AlecEcommFormServiceService } from 'src/app/services/alec-ecomm-form-service.service';
 import { CartService } from 'src/app/services/cart.service';
+import { CheckoutService } from 'src/app/services/checkout.service';
 import { AlecEcommValidators } from 'src/app/validators/alec-ecomm-validators';
 
 @Component({
@@ -25,7 +30,11 @@ export class CheckoutComponent implements OnInit {
   billingAddressStates: State[] =[];
 
 
-  constructor(private formBuilder:FormBuilder, private cartService: CartService,private alecEcommFormService: AlecEcommFormServiceService) { }
+  constructor(private formBuilder:FormBuilder,
+             private cartService: CartService,
+             private alecEcommFormService: AlecEcommFormServiceService,
+             private checkoutService:CheckoutService, 
+             private router:Router) { }
 
   ngOnInit(): void {
 
@@ -140,11 +149,64 @@ export class CheckoutComponent implements OnInit {
   onSubmit(){
     if(this.checkoutFormGroup.invalid){
       this.checkoutFormGroup.markAllAsTouched();
+      return;
     }
-    console.log("Handling submission of data");
-    console.log(this.checkoutFormGroup.get('customer')?.value);
+    // set up order
+    let order = new Order();
+    order.totalPrice = this.totalPrice;
+    order.totalQuantity = this.totalQuantity;
+    //get cart items
+    const cartItems = this.cartService.cartItems;
+    // create orderItems from cartItems. loops over cartItems array, for every item(tempCartItem) create a new OrderItem
+    let orderItems: OrderItem[] = cartItems.map(tempCartItem => new OrderItem(tempCartItem));
+
+    //setup Purchase
+    let purchase = new Purchase();
+    //populate purchase - customer
+    purchase.customer = this.checkoutFormGroup.controls['customer'].value;
+    //populate purchase - shippingAddress
+    purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value;
+    const shippingState: State = JSON.parse(JSON.stringify(purchase.shippingAddress.state))
+    const shippingAddressCountry: Country = JSON.parse(JSON.stringify(purchase.shippingAddress.country));
+    purchase.shippingAddress.state = shippingState.name;
+    purchase.shippingAddress.country = shippingAddressCountry.name;
+    //populate purchase - billingAddress
+    purchase.billingAddress = this.checkoutFormGroup.controls['billingAddress'].value;
+    const billingState: State = JSON.parse(JSON.stringify(purchase.billingAddress.state))
+    const billingAddressCountry: Country = JSON.parse(JSON.stringify(purchase.billingAddress.country));
+    purchase.billingAddress.state = billingState.name;
+    purchase.billingAddress.country = billingAddressCountry.name;
+    //populate purchase - corder and order items
+    purchase.order = order;
+    purchase.orderItems = orderItems;
+
+    // call RESTAPI via checkoutService
+    this.checkoutService.placeOrder(purchase).subscribe(
+      {
+        next: response=> {
+          alert(`Your order has been recieved! \n Your order tracking number is: ${response.orderTrackingNumber}`);
+          this.resetCart();
+        },
+        error: err=>{
+          alert(`There was an error with your order: ${err.message}`);
+        }
+
+      }
+    )
 
   }
+
+  resetCart(){
+    //reset cart data
+    this.cartService.cartItems = [];
+    this.cartService.totalPrice.next(0);
+    this.cartService.totalQuantity.next(0);
+    //reset form data
+    this.checkoutFormGroup.reset();
+    // nav back to products page
+    this.router.navigateByUrl("/products");
+  }
+
 
   copyShippingAddressToBillingAddress(event:any) {
       if(event.target?.checked){
