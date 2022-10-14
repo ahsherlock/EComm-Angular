@@ -1,5 +1,6 @@
 .security-btn{
     position: relative;
+    padding-right: 15px;
     right: 0;
     min-width: 95px;
     color: #fff;
@@ -19,9 +20,9 @@
 }
 
 .login-status-user-info{
-    line-height:43px;
+    line-height:20px;
     border:1px #e5e5e5;
-    padding:0 17px;
+    padding:0 30px;
     -webkit-border-radius:3px;
     -moz-border-radius:3px;
     border-radius:3px;

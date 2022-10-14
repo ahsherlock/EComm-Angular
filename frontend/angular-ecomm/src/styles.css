@@ -60,7 +60,7 @@ h1,h2,h3,h4,h5,h6{
 }
 
 h1{
-    font-size:36px
+    font-size:36px;
 }
 
 h2{
@@ -97,6 +97,32 @@ a,a:hover{
     -o-transition:all .3s ease;
     -moz-transition:all .3s ease;
     transition:all .3s ease
+}
+
+#okta-sign-in img.auth-org-logo{
+    display: block;
+    width:100% !important; 
+    height: 100% !important; 
+    max-width: 400px;
+    max-height: fit-content !important;      
+    margin-left:auto !important;
+    margin-right:auto !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+}
+.shopLogo{
+    display: block;
+
+    max-width: 100px;
+    max-height: 100px;      
+    margin-left:auto !important;
+    margin-right:auto !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important; 
+}
+div.logo{
+    margin-bottom: 100px !important;
+    background-color: white !important;
 }
 
 /*Layout Css*/
@@ -142,7 +168,7 @@ aside.menu-sidebar.d-none.d-lg-block.clr{
     top:0;
     right:0;
     left:200px;
-    height:75px;
+    height:100px;
     z-index:3
 }
 
@@ -826,7 +852,7 @@ footer ul li{
         float:left;
         margin-top:16px;
         color:#205b8d;
-        margin-left:15px
+        margin: left 5px !important;
     }
     .header-mobile .header-mobile-bar{
         padding:10px 0;
