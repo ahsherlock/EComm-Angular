@@ -28,23 +28,26 @@ export class CheckoutComponent implements OnInit {
   countries: Country[] = [];
   shippingAddressStates: State[] = [];
   billingAddressStates: State[] =[];
-
+  storage: Storage = sessionStorage;
 
   constructor(private formBuilder:FormBuilder,
-             private cartService: CartService,
-             private alecEcommFormService: AlecEcommFormServiceService,
-             private checkoutService:CheckoutService, 
-             private router:Router) { }
+              private cartService: CartService,
+              private alecEcommFormService: AlecEcommFormServiceService,
+              private checkoutService:CheckoutService, 
+              private router:Router) { }
 
   ngOnInit(): void {
 
     this.reviewCartDetails();
 
+    //get user email from browser storage
+    const theEmail = JSON.parse(this.storage.getItem('userEmail')!);
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: new FormControl('',[Validators.required, Validators.minLength(2), AlecEcommValidators.notOnlyWhiteSpace]),
         lastName:new FormControl('',[Validators.required, Validators.minLength(2), AlecEcommValidators.notOnlyWhiteSpace]),
-        email: new FormControl('',[Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'), AlecEcommValidators.notOnlyWhiteSpace])
+        email: new FormControl(theEmail,[Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'), AlecEcommValidators.notOnlyWhiteSpace])
       }),
       shippingAddress: this.formBuilder.group({
         street:new FormControl('',[Validators.required, Validators.minLength(2), AlecEcommValidators.notOnlyWhiteSpace]),

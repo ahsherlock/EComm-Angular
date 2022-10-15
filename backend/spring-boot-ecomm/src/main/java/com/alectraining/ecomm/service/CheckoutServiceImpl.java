@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService{
+
     private CustomerRepository customerRepository;
 
     public CheckoutServiceImpl(CustomerRepository customerRepository){
@@ -36,6 +37,14 @@ public class CheckoutServiceImpl implements CheckoutService{
         order.setShippingAddress(purchase.getShippingAddress());
         //populate customer with order
         Customer customer = purchase.getCustomer();
+        //check if customer exists in Database already
+        String theEmail = customer.getEmail();
+        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+        if(customerFromDB != null){
+            // found customer in database
+            customer = customerFromDB;
+        }
+
         customer.add(order);
         //save to database
         customerRepository.save(customer);
